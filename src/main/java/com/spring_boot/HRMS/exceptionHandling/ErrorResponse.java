@@ -7,6 +7,9 @@ public class ErrorResponse {
 
     //constructor
 
+    public ErrorResponse() {
+    }
+
     public ErrorResponse(String message, int statusCode, long timeStamp) {
         this.message = message;
         this.statusCode = statusCode;
