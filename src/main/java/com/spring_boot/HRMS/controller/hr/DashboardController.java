@@ -1,12 +1,16 @@
 package com.spring_boot.HRMS.controller.hr;
 
+import com.spring_boot.HRMS.entity.HR;
+import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.HRService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/dashboard")
+@Slf4j
 public class DashboardController {
 
     private HRService hrService;
@@ -22,19 +26,38 @@ public class DashboardController {
     }
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<?> getProfile(@PathVariable String id){
-        try {
-            long hrId=Long.parseLong(id);
-            return ResponseEntity.ok(hrService.getHrById(hrId));
-
+    public ResponseEntity<HR> getProfile(@PathVariable String id) throws Exception {
+        long hrId;
+        try{
+            hrId=Long.parseLong(id);
         }catch (Exception e){
-
+            log.error(e.getMessage());
+            throw new Exception(id+" can't be converted into a long value.");
         }
-        return null;
+
+        try {
+            return ResponseEntity.ok(hrService.getHrById(hrId));
+        }catch (Exception e){
+            throw new ProfileNotFoundException("can't find Hr profile with id:"+id);
+        }
     }
 
     @PutMapping("/profile/{id}")
-    public ResponseEntity<?> updateHrProfile(@PathVariable String id){
-        return null;
+    public ResponseEntity<HR> updateHrProfile(@PathVariable String id, @RequestBody HR hr) throws Exception {
+        long hrId;
+        try{
+            hrId=Long.parseLong(id);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            throw new Exception(id+" can't be converted into a long value.");
+        }
+
+        try{
+            return ResponseEntity.ok(hrService.updateHrProfile(hrId,hr));
+        }catch (Exception e){
+            log.error(e.getMessage());
+            throw new Exception(e.getMessage());
+        }
+
     }
 }
