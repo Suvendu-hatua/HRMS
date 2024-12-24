@@ -2,6 +2,7 @@ package com.spring_boot.HRMS.config;
 
 import com.spring_boot.HRMS.dao.HrDao;
 import com.spring_boot.HRMS.entity.HR;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@Slf4j
 public class HRMSUserDetailsService implements UserDetailsService {
 
     private HrDao hrDao;
@@ -37,7 +39,7 @@ public class HRMSUserDetailsService implements UserDetailsService {
 
         HR hr=hrDao.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("can't find Hr profile with email:"+email));
 
-        System.out.println(hr);
+        log.info(hr.toString());
 
         //Getting list of authorities.
         Collection<GrantedAuthority> authorities= List.of(new SimpleGrantedAuthority(hr.getRole()));
