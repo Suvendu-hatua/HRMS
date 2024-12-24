@@ -47,11 +47,9 @@ public class HRService {
     public HR updateHrProfile(long id,HR updatedHr){
         HR hr=getHrById(id);
         if(hr!=null){
-            hr.setEmail(updatedHr.getEmail());
             hr.setFirstName(updatedHr.getFirstName());
             hr.setLastName(updatedHr.getLastName());
-            hr.setPassword(updatedHr.getPassword());
-            hr.setRole(updatedHr.getRole());
+            hr.setMobileNumber(updatedHr.getMobileNumber());
             return hrDao.save(hr);
         }
         throw new RuntimeException("can't update hr profile.");
