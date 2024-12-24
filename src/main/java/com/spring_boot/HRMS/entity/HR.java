@@ -16,29 +16,24 @@ public class HR {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email",unique = true)
-    private String email;
+    @Column(name = "mobile_no",length = 10)
+    private String mobileNumber;
 
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "role")
-    private String role;
+    @OneToOne
+    @JoinColumn(name = "person_id",nullable = false)
+    private Person person;
 
     //Adding Constructor
 
     public HR() {
     }
 
-    public HR(String firstName, String lastName, String email, String password, String role) {
+    public HR(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.role = role;
     }
-//Adding Setter and Getter
 
+//Adding Setter and Getter
     public long getId() {
         return id;
     }
@@ -63,30 +58,21 @@ public class HR {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public String getPassword() {
-        return password;
+    public String getMobileNumber() {
+        return mobileNumber;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
 
     //Overriding toString()
 
@@ -94,12 +80,10 @@ public class HR {
     @Override
     public String toString() {
         return "HR{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", id=" + id +
                 '}';
     }
 }
