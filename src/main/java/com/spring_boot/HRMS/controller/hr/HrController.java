@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/dashboard")
+@RequestMapping("/hr")
 @Slf4j
-public class DashboardController {
+public class HrController {
 
     private HRService hrService;
 
     @Autowired
-    public DashboardController(HRService hrService) {
+    public HrController(HRService hrService) {
         this.hrService = hrService;
     }
 
