@@ -19,13 +19,6 @@ public class SecurityConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider(HRMSUserDetailsService userService){
-//        DaoAuthenticationProvider auth=new DaoAuthenticationProvider();
-//        auth.setUserDetailsService(userService);
-//        auth.setPasswordEncoder(passwordEncoder());
-//        return auth;
-//    }
 
     /**
      * @param http
@@ -34,8 +27,8 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(requests-> requests
-                        .requestMatchers("/dashboard/**").authenticated()
+        http.csrf(csrfCon->csrfCon.disable()).authorizeHttpRequests(requests-> requests
+                        .requestMatchers("/hr/**","/admin/**").authenticated()
                 );
 
         http.formLogin(Customizer.withDefaults());

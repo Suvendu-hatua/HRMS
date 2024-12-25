@@ -19,14 +19,6 @@ public class Person {
     @Column(name = "role")
     private String role;
 
-    //Adding one-to-one mapping to Admin
-    @OneToOne(mappedBy = "person",cascade = CascadeType.ALL)
-    private Admin admin;
-
-    //Adding one-to-one mapping to HR
-    @OneToOne(mappedBy = "person",cascade = CascadeType.ALL)
-    private HR hr;
-
     //constructor
 
     public Person() {
@@ -66,22 +58,6 @@ public class Person {
         this.role = role;
     }
 
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
-
-    public HR getHr() {
-        return hr;
-    }
-
-    public void setHr(HR hr) {
-        this.hr = hr;
-    }
-
     //toString()
 
     @Override
@@ -91,8 +67,6 @@ public class Person {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
-                ", admin=" + admin +
-                ", hr=" + hr +
                 '}';
     }
 }

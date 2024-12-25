@@ -45,12 +45,9 @@ public class HRService {
 
     @Transactional
     public HR updateHrProfile(long id,HR updatedHr){
-        HR hr=getHrById(id);
-        if(hr!=null){
-            hr.setFirstName(updatedHr.getFirstName());
-            hr.setLastName(updatedHr.getLastName());
-            hr.setMobileNumber(updatedHr.getMobileNumber());
-            return hrDao.save(hr);
+        if(hrDao.existsById(id)){
+            updatedHr.setId(id);
+            return hrDao.save(updatedHr);
         }
         throw new RuntimeException("can't update hr profile.");
     }
