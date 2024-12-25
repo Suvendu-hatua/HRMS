@@ -19,8 +19,8 @@ public class HR {
     @Column(name = "mobile_no",length = 10)
     private String mobileNumber;
 
-    @OneToOne
-    @JoinColumn(name = "person_id",nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id",referencedColumnName = "id")
     private Person person;
 
     //Adding Constructor
