@@ -36,7 +36,7 @@ public class JobService {
             job.setId(id);
             return jobDao.save(job);
         }
-        throw new RuntimeException("can't find job id:"+id);
+        throw new RuntimeException("can't find job with id:"+id);
     }
 
     @Transactional
@@ -47,5 +47,13 @@ public class JobService {
             return "success";
         }
         throw  new RuntimeException("can't find job by id:"+id);
+    }
+
+    public List<Job> findJobsByTitle(String title){
+        return jobDao.findByTitle(title);
+    }
+
+    public List<Job> findJobsByLocation(String location){
+        return jobDao.findByLocation(location);
     }
 }
