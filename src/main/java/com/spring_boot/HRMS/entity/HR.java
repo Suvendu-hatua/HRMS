@@ -2,6 +2,8 @@ package com.spring_boot.HRMS.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "hr")
 public class HR {
@@ -19,9 +21,15 @@ public class HR {
     @Column(name = "mobile_no",length = 10)
     private String mobileNumber;
 
+    //Adding One-to-one relationship with Person Entity
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id",referencedColumnName = "id")
     private Person person;
+
+    //Adding one-to-many relationship with Job
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "hr_id") //foreign key in the job Table.
+    private Set<Job> jobs;
 
     //Adding Constructor
 
@@ -72,6 +80,14 @@ public class HR {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public Set<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(Set<Job> jobs) {
+        this.jobs = jobs;
     }
 
     //Overriding toString()
