@@ -3,7 +3,7 @@ package com.spring_boot.HRMS.controller.job;
 import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.JobService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/jobs")
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class JobController {
+
     private JobService jobService;
 
     //get all the jobs
@@ -41,7 +42,7 @@ public class JobController {
     }
 
     //Searching Jobs by particular Skill Sets
-    @GetMapping
+    @GetMapping("/searchBySkills")
     public ResponseEntity<List<Job>> searchJobsBySkillSets(){
         return null;
     }

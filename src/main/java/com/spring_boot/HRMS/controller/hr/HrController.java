@@ -81,7 +81,8 @@ public class HrController {
     @PostMapping("/post-job")
     public ResponseEntity<String> addJob(@RequestBody Job job) throws Exception {
         try {
-           return ResponseEntity.status(HttpStatus.CREATED).body(jobService.saveJob(job).toString()) ;
+           job= jobService.saveJob(job);
+           return ResponseEntity.status(HttpStatus.CREATED).body("Job added successfully with id:"+job.getId()) ;
         }catch (Exception e){
             throw new Exception("can't post the job");
         }
