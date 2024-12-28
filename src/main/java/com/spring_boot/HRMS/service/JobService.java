@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,11 @@ public class JobService {
     public Job saveJob(Job job){
         //generating random ID
         job.setId(UUID.randomUUID().toString());
+        //Setting Current DateTime for publishedDate
+        LocalDate localDate=LocalDate.now();
+        job.setPublishedDate(localDate);
+
+        //Saving Job to Database.
         return jobDao.save(job);
     }
     @Transactional
