@@ -1,5 +1,6 @@
 package com.spring_boot.HRMS.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -27,8 +28,8 @@ public class HR {
     private Person person;
 
     //Adding one-to-many relationship with Job
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "hr_id") //foreign key in the job Table.
+    @OneToMany(mappedBy = "hr", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Job> jobs;
 
     //Adding Constructor
