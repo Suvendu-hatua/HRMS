@@ -28,4 +28,9 @@ public class Job {
     private String location;
     private String jobType;
 
+    //Adding many-to-one relationship with Job Entity
+    @ManyToOne( cascade = {CascadeType.DETACH,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.PERSIST})
+    @JoinColumn(name = "hr_id",referencedColumnName = "id")
+    private HR hr;
+
 }
