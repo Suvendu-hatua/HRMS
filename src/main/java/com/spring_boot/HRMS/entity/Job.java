@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "job")
@@ -32,5 +33,14 @@ public class Job {
     @ManyToOne( cascade = {CascadeType.DETACH,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "hr_id",referencedColumnName = "id")
     private HR hr;
+
+    //Adding Many-to-Many relationship with Candidate Entity
+    @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE})
+    @JoinTable(
+            name = "candidate_job",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "candidate_id")
+    )
+    private List<Candidate> candidates;
 
 }
