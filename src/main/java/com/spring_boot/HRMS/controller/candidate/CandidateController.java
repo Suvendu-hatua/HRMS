@@ -17,16 +17,6 @@ public class CandidateController {
 
     private CandidateService candidateService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerCandidate(@RequestBody Candidate candidate){
-        try {
-            candidateService.registerCandidate(candidate);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Candidate is registered successfully.");
-        }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Candidate> getCandidateById(@PathVariable String id){
         long candidateId;
