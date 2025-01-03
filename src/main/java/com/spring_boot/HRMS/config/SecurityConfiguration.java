@@ -30,7 +30,8 @@ public class SecurityConfiguration {
         http.csrf(csrfCon->csrfCon.disable()).authorizeHttpRequests(requests-> requests
                         .requestMatchers("/hr/**").hasRole("HR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/jobs/**").permitAll()
+                        .requestMatchers("/candidate/**").hasRole("CANDIDATE")
+                        .requestMatchers("/jobs/**","/register").permitAll()
                         .anyRequest().authenticated()
                 );
 
