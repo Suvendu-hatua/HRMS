@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,8 +56,16 @@ public class CandidateController {
     }
 
     //applying to a specific Job
-    @GetMapping("/do-apply/{jobId}")
-    public ResponseEntity<String> applyToJob(@PathVariable String jobId){
-        return null;
+    @PostMapping("/do-apply/{jobId}")
+    public ResponseEntity<String> applyToJob(@PathVariable String jobId, Authentication authentication){
+       try{
+           //Retrieving logged-in user's email
+           String email=authentication.getName();
+           //applying to the Job
+           candidateService.applyToJob(email, jobId);
+           return ResponseEntity.status(HttpStatus.OK).body("Successful");
+       }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+       }
     }
 }
