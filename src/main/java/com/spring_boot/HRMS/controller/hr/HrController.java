@@ -5,6 +5,10 @@ import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.HRService;
 import com.spring_boot.HRMS.service.JobService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/hr")
 @Slf4j
+@Tag(name = "HR", description = "Operations related to HR")
 public class HrController {
 
     private HRService hrService;
@@ -32,6 +37,14 @@ public class HrController {
     }
 
     //Get HR profile by HR id
+    @Operation(
+            summary = "Get a HR by ID",
+            description = "This endpoint retrieves a hr by their unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "HR found"),
+                    @ApiResponse(responseCode = "404", description = "HR not found")
+            }
+    )
     @GetMapping("/profile/{id}")
     public ResponseEntity<HR> getProfile(@PathVariable String id) throws Exception {
         long hrId;
@@ -69,14 +82,26 @@ public class HrController {
     }
 
     //find a particular Job with id
+    @Operation(
+            summary = "Get a Job details by JobID",
+            description = "This endpoint retrieve a specific Job Details by an Unique JobID",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Job Details Found"),
+                    @ApiResponse(responseCode = "404",description = "Job Details Not Found")
+            }
+    )
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable String id){
+    public ResponseEntity<Job> getJobById(
+            @Parameter(description = "Unique ID of the Job")
+            @PathVariable String id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(jobService.getJobById(id));
         }catch (Exception e){
             throw new ProfileNotFoundException(e.getMessage());
         }
     }
+
+
     //Adding a JobPost
     @PostMapping("/post-job")
     public ResponseEntity<String> addJob(@RequestBody Job job) throws Exception {
