@@ -2,12 +2,14 @@ package com.spring_boot.HRMS.controller.admin;
 
 import com.spring_boot.HRMS.dtos.AdminDTO;
 import com.spring_boot.HRMS.dtos.AdminPostDTO;
+import com.spring_boot.HRMS.dtos.HrPostDTO;
 import com.spring_boot.HRMS.entity.Admin;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.AdminService;
 import com.spring_boot.HRMS.service.HRService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -42,7 +44,9 @@ public class AdminController {
             }
     )
     @GetMapping("/profile/{id}")
-    public ResponseEntity<AdminDTO> getAdminProfileById(@PathVariable String id) throws Exception {
+    public ResponseEntity<AdminDTO> getAdminProfileById(
+            @Parameter(description = "Unique ID of Admin")
+            @PathVariable String id) throws Exception {
         long adminId;
         try{
             adminId=Long.parseLong(id);
@@ -82,6 +86,7 @@ public class AdminController {
         }
     }
 
+
     @Operation(
             summary = "Add a HR",
             description = "This endpoint post a HR into DB",
@@ -92,12 +97,9 @@ public class AdminController {
             }
     )
     @PostMapping("/add-hr")
-    public ResponseEntity<String> addHr(@RequestBody HR hr){
+    public ResponseEntity<String> addHr(@RequestBody HrPostDTO hrPostDTO){
         try{
-            hr.getPerson().setRole("ROLE_HR");
-            hr.getPerson().setPassword(passwordEncoder.encode(hr.getPerson().getPassword()));
-            HR newHr=hrService.saveHrProfile(hr);
-
+            HR newHr=hrService.saveHrProfile(hrPostDTO);
             if(newHr.getId()>0){
                 return ResponseEntity.status(HttpStatus.CREATED).body("Hr is added successfully");
             }
@@ -121,7 +123,9 @@ public class AdminController {
             }
     )
     @DeleteMapping("/delete-hr/{id}")
-    public ResponseEntity<String> deleteHrProfile(@PathVariable String id) throws Exception {
+    public ResponseEntity<String> deleteHrProfile(
+            @Parameter(description = "Unique ID of HR")
+            @PathVariable String id) throws Exception {
         long hrId;
         try{
             hrId=Long.parseLong(id);
