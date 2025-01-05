@@ -11,6 +11,5 @@ public interface JobMapper {
     @Mapping(source = "id",target ="jobId" )
     JobDTO toDTO(Job job);
 
-    @Mapping(source = "hrID",target = "hr.id")
     Job toEntity(JobPostDTO jobPostDTO);
 }
