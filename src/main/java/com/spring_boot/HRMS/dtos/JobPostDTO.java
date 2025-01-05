@@ -8,12 +8,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class JobPostDTO {
-    private String id;
     private String title;
     private String description;
     private String[] skillSets;
     private int vacancy;
     private String location;
     private String jobType;
-    private long hrID;
 }
