@@ -1,9 +1,12 @@
 package com.spring_boot.HRMS.service;
 
+import com.spring_boot.HRMS.dao.HrDao;
 import com.spring_boot.HRMS.dao.JobDao;
 import com.spring_boot.HRMS.dtos.JobDTO;
 import com.spring_boot.HRMS.dtos.JobPostDTO;
+import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.entity.Job;
+import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.mapper.JobMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class JobService {
+    private final HrDao hrDao;
     private final JobDao jobDao;
     private final JobMapper jobMapper;
 
@@ -33,14 +37,18 @@ public class JobService {
     }
 
     @Transactional
-    public Job saveJob(JobPostDTO jobPostDTO){
+    public Job saveJob(JobPostDTO jobPostDTO,String email){
+        //retrieving HR details by  authenticate user's email
+        HR hr=hrDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find HR profile with email:"+email));
+        //Converting to HR
         Job job=jobMapper.toEntity(jobPostDTO);
         //generating random ID
         job.setId(UUID.randomUUID().toString());
         //Setting Current DateTime for publishedDate
         LocalDate localDate=LocalDate.now();
         job.setPublishedDate(localDate);
-
+        //attaching Hr to this job
+        job.setHr(hr);
         //Saving Job to Database.
         return jobDao.save(job);
     }

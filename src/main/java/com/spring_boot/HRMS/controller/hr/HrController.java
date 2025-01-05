@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -132,9 +133,10 @@ public class HrController {
             }
     )
     @PostMapping("/post-job")
-    public ResponseEntity<String> addJob(@RequestBody JobPostDTO jobPostDTO) throws Exception {
+    public ResponseEntity<String> addJob(@RequestBody JobPostDTO jobPostDTO, Authentication authentication) throws Exception {
         try {
-           Job job= jobService.saveJob(jobPostDTO);
+            String email=authentication.getName();
+           Job job= jobService.saveJob(jobPostDTO,email);
            return ResponseEntity.status(HttpStatus.CREATED).body("Job added successfully with id:"+job.getId()) ;
         }catch (Exception e){
             throw new Exception("can't post the job");
