@@ -35,7 +35,7 @@ public class HRService {
 
     /**
      * Save Hr profile
-     * @param hr
+     * @param hrPostDTO
      * @return
      */
     @Transactional
