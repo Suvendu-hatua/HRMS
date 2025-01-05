@@ -1,5 +1,6 @@
 package com.spring_boot.HRMS.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +29,9 @@ public class Job {
     private String jobType;
 
     //Adding many-to-one relationship with Job Entity
-    @ManyToOne( cascade = {CascadeType.DETACH,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.PERSIST})
+    @ManyToOne( fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name = "hr_id",referencedColumnName = "id")
+    @JsonIgnore
     private HR hr;
 
     //Adding Many-to-Many relationship with Candidate Entity
@@ -39,6 +41,7 @@ public class Job {
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "candidate_id")
     )
+    @JsonIgnore
     private List<Candidate> candidates;
 
 }
