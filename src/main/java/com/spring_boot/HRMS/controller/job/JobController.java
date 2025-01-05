@@ -62,18 +62,42 @@ public class JobController {
     }
 
     //Searching Jobs by JobTitle
+    @Operation(
+            summary = "Search Jobs By Job Title",
+            description = "This endpoint retrieves jobs based on Job Title",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Jobs Found"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+            }
+    )
     @GetMapping("/searchByTitle")
     public ResponseEntity<List<JobDTO>> searchJobsByJobTitle(@RequestParam("title") String title){
         return ResponseEntity.status(HttpStatus.OK).body(jobService.findJobsByTitle(title));
     }
 
     //Searching Jobs by particular Skill Sets
+    @Operation(
+            summary = "Search Jobs By Skill Sets",
+            description = "This endpoint retrieves jobs based on Skill Sets",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Jobs Found"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+            }
+    )
     @GetMapping("/searchBySkills")
     public ResponseEntity<List<Job>> searchJobsBySkillSets(){
         return null;
     }
 
     //Searching Jobs by location
+    @Operation(
+            summary = "Search Jobs By Location",
+            description = "This endpoint retrieves jobs based on searched Location",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Jobs Found"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+            }
+    )
     @GetMapping("/searchByLocation")
     public  ResponseEntity<List<JobDTO>> searchJobByLocation(@RequestParam("location") String location){
         return ResponseEntity.status(HttpStatus.OK).body(jobService.findJobsByLocation(location));

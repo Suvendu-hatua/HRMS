@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,8 +27,9 @@ public class AdminController {
 
     private HRService hrService;
     private AdminService adminService;
-    private PasswordEncoder passwordEncoder;
-
+    @Operation(
+            summary = "Get Admin Dashboard"
+    )
     @GetMapping()
     public ResponseEntity<String> getAdminDashBoard(){
         return ResponseEntity.status(HttpStatus.OK).body("Welcome to HRMS Portal [ADMIN]");
