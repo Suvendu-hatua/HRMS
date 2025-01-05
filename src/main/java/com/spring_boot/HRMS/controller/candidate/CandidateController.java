@@ -1,8 +1,12 @@
 package com.spring_boot.HRMS.controller.candidate;
 
-import com.spring_boot.HRMS.entity.Candidate;
+import com.spring_boot.HRMS.dtos.CandidateDTO;
+import com.spring_boot.HRMS.dtos.CandidatePostDTO;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.CandidateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,12 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @AllArgsConstructor
 @RequestMapping("/candidate")
+@Tag(name = "Candidate",description = "Operations Related to Candidate")
 public class CandidateController {
 
     private CandidateService candidateService;
 
+    @Operation(
+            summary = "Get Candidate by Unique Candidate Id",
+            description = "This endpoint retrieve Candidate details by an unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Candidate Found"),
+                    @ApiResponse(responseCode = "404",description = "Candidate Not Found")
+            }
+    )
     @GetMapping("/{id}")
-    public ResponseEntity<Candidate> getCandidateById(@PathVariable String id){
+    public ResponseEntity<CandidateDTO> getCandidateById(@PathVariable String id){
         long candidateId;
         try{
             candidateId=Long.parseLong(id);
@@ -29,7 +42,7 @@ public class CandidateController {
         }
         //success
         try{
-            Candidate candidate=candidateService.getCandidateById(candidateId);
+            CandidateDTO candidate=candidateService.getCandidateById(candidateId);
             return ResponseEntity.status(HttpStatus.OK).body(candidate);
         }catch (Exception e){
             throw new ProfileNotFoundException(e.getMessage());
@@ -37,8 +50,16 @@ public class CandidateController {
     }
 
     //Update Candidate Account
+    @Operation(
+            summary = "Update Candidate Profile",
+            description = "This endpoint updates an existing Candidate Profile",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Candidate Updated Successfully"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+            }
+    )
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateCandidateAccount(@PathVariable String id, @RequestBody Candidate candidate){
+    public ResponseEntity<String> updateCandidateAccount(@PathVariable String id, @RequestBody CandidatePostDTO candidatePostDTO){
         long candidateId;
         try{
             candidateId=Long.parseLong(id);
@@ -48,7 +69,7 @@ public class CandidateController {
         }
         //Success
         try{
-            candidateService.updateCandidate(candidateId,candidate);
+            candidateService.updateCandidate(candidateId,candidatePostDTO);
             return ResponseEntity.status(HttpStatus.OK).body("Account updated successfully.");
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
@@ -56,6 +77,15 @@ public class CandidateController {
     }
 
     //applying to a specific Job
+    @Operation(
+            summary = "Apply To a Job",
+            description = "This endpoint will help a candidate to apply to a Specific Job with  Specific JobID",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Applied to Job"),
+                    @ApiResponse(responseCode = "400",description = "BAD Request"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+            }
+    )
     @PostMapping("/do-apply/{jobId}")
     public ResponseEntity<String> applyToJob(@PathVariable String jobId, Authentication authentication){
        try{
