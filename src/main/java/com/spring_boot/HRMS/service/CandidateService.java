@@ -1,28 +1,40 @@
 package com.spring_boot.HRMS.service;
 
 import com.spring_boot.HRMS.dao.CandidateDao;
+import com.spring_boot.HRMS.dtos.CandidateDTO;
+import com.spring_boot.HRMS.dtos.CandidatePostDTO;
 import com.spring_boot.HRMS.entity.Candidate;
 import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
+import com.spring_boot.HRMS.mapper.CandidateMapper;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class CandidateService {
 
-    private CandidateDao candidateDao;
-    private JobService jobService;
+    private final CandidateDao candidateDao;
+    private final JobService jobService;
+    private final CandidateMapper candidateMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
-     * @param candidate
+     * @param candidatePostDTO
      * @return
      */
     @Transactional
-    public Candidate registerCandidate(Candidate candidate){
+    public Candidate registerCandidate(CandidatePostDTO candidatePostDTO){
+       Candidate candidate=candidateMapper.toEntity(candidatePostDTO);
+       //setting Role
+        candidate.getPerson().setRole("ROLE_CANDIDATE");
+        //encrypting password
+        candidate.getPerson().setPassword(passwordEncoder.encode(candidate.getPerson().getPassword()));
+        //Saving to DB
         candidate=candidateDao.save(candidate);
         if(candidate.getId()>0){
             log.info("candidate is registered successfully.");
@@ -32,19 +44,25 @@ public class CandidateService {
         }
     }
 
-    public Candidate getCandidateById(long id){
-        return candidateDao.findById(id).orElseThrow(()->new RuntimeException("can't find candidate with id:"+id));
+    public CandidateDTO getCandidateById(long id){
+        Candidate candidate= candidateDao.findById(id).orElseThrow(()->new RuntimeException("can't find candidate with id:"+id));
+        //converting to CandidateDTO
+        return candidateMapper.toDTO(candidate);
     }
 
     /**
      * @param id
-     * @param candidate
+     * @param candidatePostDTO
      * @return
      */
     @Transactional
-    public Candidate updateCandidate(long id,Candidate candidate){
+    public Candidate updateCandidate(long id, CandidatePostDTO candidatePostDTO){
         if(candidateDao.existsById(id)){
-            candidate.setId(id);
+            Candidate candidate=candidateDao.findById(id).orElseThrow(()->new ProfileNotFoundException("can't find Candidate Profile with Id:"+id));
+            //Updating fields
+            candidate.setFirstName(candidatePostDTO.getFirstName());
+            candidate.setLastName(candidatePostDTO.getLastName());
+            candidate.setMobileNumber(candidate.getMobileNumber());
             return candidateDao.save(candidate);
         }else{
             throw new RuntimeException("can't find candidate profile to update with id:"+id);
@@ -56,9 +74,11 @@ public class CandidateService {
      */
     @Transactional
     public void deleteCandidateById(long id){
-        Candidate candidate=getCandidateById(id);
         try{
-            candidateDao.delete(candidate);
+            if(candidateDao.existsById(id)){
+                candidateDao.deleteById(id);
+            }
+
         }catch (Exception e){
             throw new RuntimeException("can't find candidate to delete with id:"+id);
         }
