@@ -1,32 +1,40 @@
 package com.spring_boot.HRMS.service;
 
 import com.spring_boot.HRMS.dao.JobDao;
+import com.spring_boot.HRMS.dtos.JobDTO;
+import com.spring_boot.HRMS.dtos.JobPostDTO;
 import com.spring_boot.HRMS.entity.Job;
+import com.spring_boot.HRMS.mapper.JobMapper;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JobService {
-    private JobDao jobDao;
+    private final JobDao jobDao;
+    private final JobMapper jobMapper;
 
-    public List<Job> getAllJobs(){
-        return jobDao.findAll();
+    public List<JobDTO> getAllJobs(){
+        return jobDao.findAll().stream().map(jobMapper::toDTO).collect(Collectors.toList());
     }
 
-    public Job getJobById(String id){
-        return jobDao.findById(id).orElseThrow(()->new RuntimeException("can't find Job by id:"+id));
+    public JobDTO getJobById(String id){
+        Job job= jobDao.findById(id).orElseThrow(()->new RuntimeException("can't find Job by id:"+id));
+        //Converting to JobDTO
+        return jobMapper.toDTO(job);
     }
 
     @Transactional
-    public Job saveJob(Job job){
+    public Job saveJob(JobPostDTO jobPostDTO){
+        Job job=jobMapper.toEntity(jobPostDTO);
         //generating random ID
         job.setId(UUID.randomUUID().toString());
         //Setting Current DateTime for publishedDate
@@ -36,10 +44,17 @@ public class JobService {
         //Saving Job to Database.
         return jobDao.save(job);
     }
+
     @Transactional
-    public Job updateJob(String id,Job job){
+    public Job updateJob(String id,JobPostDTO jobPostDTO){
         if(jobDao.existsById(id)){
-            job.setId(id);
+            Job job=jobDao.findById(id).orElseThrow(()->new RuntimeException("Can't find Job Details with Id:"+id));
+            //updating fields
+            job.setTitle(jobPostDTO.getTitle());
+            job.setDescription(jobPostDTO.getDescription());
+            job.setVacancy(jobPostDTO.getVacancy());
+            job.setLocation(jobPostDTO.getLocation());
+            job.setSkillSets(jobPostDTO.getSkillSets());
             return jobDao.save(job);
         }
         throw new RuntimeException("can't find job with id:"+id);
@@ -47,19 +62,18 @@ public class JobService {
 
     @Transactional
     public String deleteJobById(String id){
-        Job job =getJobById(id);
-        if(job!=null){
-            jobDao.delete(job);
+        if(jobDao.existsById(id)){
+            jobDao.deleteById(id);
             return "success";
         }
         throw  new RuntimeException("can't find job by id:"+id);
     }
 
-    public List<Job> findJobsByTitle(String title){
-        return jobDao.findByTitle(title);
+    public List<JobDTO> findJobsByTitle(String title){
+        return jobDao.findByTitle(title).stream().map(jobMapper::toDTO).collect(Collectors.toList());
     }
 
-    public List<Job> findJobsByLocation(String location){
-        return jobDao.findByLocation(location);
+    public List<JobDTO> findJobsByLocation(String location){
+        return jobDao.findByLocation(location).stream().map(jobMapper::toDTO).collect(Collectors.toList());
     }
 }

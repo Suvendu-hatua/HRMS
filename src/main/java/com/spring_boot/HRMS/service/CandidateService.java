@@ -1,6 +1,7 @@
 package com.spring_boot.HRMS.service;
 
 import com.spring_boot.HRMS.dao.CandidateDao;
+import com.spring_boot.HRMS.dao.JobDao;
 import com.spring_boot.HRMS.dtos.CandidateDTO;
 import com.spring_boot.HRMS.dtos.CandidatePostDTO;
 import com.spring_boot.HRMS.entity.Candidate;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class CandidateService {
 
     private final CandidateDao candidateDao;
-    private final JobService jobService;
+    private final JobDao jobDao;
     private final CandidateMapper candidateMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -90,7 +91,7 @@ public class CandidateService {
             //Fetch candidate details from logged-in user's email
             Candidate candidate=candidateDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find person with username"));
             //Fetch job details from job table using jobId
-            Job job=jobService.getJobById(jobId);
+            Job job=jobDao.findById(jobId).orElseThrow(()->new RuntimeException("Can't find Job details by Id:"+jobId));
             //Adding Job to candidate
             candidate.getJobs().add(job);
             //Saving updated candidate in the DB.
