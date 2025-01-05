@@ -2,6 +2,8 @@ package com.spring_boot.HRMS.controller.hr;
 
 import com.spring_boot.HRMS.dtos.HrDTO;
 import com.spring_boot.HRMS.dtos.HrPostDTO;
+import com.spring_boot.HRMS.dtos.JobDTO;
+import com.spring_boot.HRMS.dtos.JobPostDTO;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
@@ -108,7 +110,7 @@ public class HrController {
             }
     )
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<Job> getJobById(
+    public ResponseEntity<JobDTO> getJobById(
             @Parameter(description = "Unique ID of the Job")
             @PathVariable String id){
         try{
@@ -130,9 +132,9 @@ public class HrController {
             }
     )
     @PostMapping("/post-job")
-    public ResponseEntity<String> addJob(@RequestBody Job job) throws Exception {
+    public ResponseEntity<String> addJob(@RequestBody JobPostDTO jobPostDTO) throws Exception {
         try {
-           job= jobService.saveJob(job);
+           Job job= jobService.saveJob(jobPostDTO);
            return ResponseEntity.status(HttpStatus.CREATED).body("Job added successfully with id:"+job.getId()) ;
         }catch (Exception e){
             throw new Exception("can't post the job");
@@ -153,7 +155,7 @@ public class HrController {
     public ResponseEntity<String> updateJobPost(
             @Parameter(description = "Unique Job Id")
             @PathVariable String id,
-            @RequestBody Job job){
+            @RequestBody JobPostDTO job){
         try{
             jobService.updateJob(id,job);
             return ResponseEntity.status(HttpStatus.OK).body("Job with id "+id+" updated successfully.");
