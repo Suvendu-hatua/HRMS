@@ -5,11 +5,14 @@ import com.spring_boot.HRMS.dtos.AdminPostDTO;
 import com.spring_boot.HRMS.dtos.HrPostDTO;
 import com.spring_boot.HRMS.entity.Admin;
 import com.spring_boot.HRMS.entity.HR;
+import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.AdminService;
 import com.spring_boot.HRMS.service.HRService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -39,8 +42,12 @@ public class AdminController {
             summary = "Get Admin Details By Admin Id",
             description = "This endpoint retrieves Admin Details by an Unique Admin Id",
             responses = {
-                    @ApiResponse(responseCode = "200",description = "Admin Details Found"),
-                    @ApiResponse(responseCode = "404",description = "Admin Details Not Found")
+                    @ApiResponse(responseCode = "200",description = "Admin Details Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = AdminDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404",description = "Admin Details Not Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/profile/{id}")

@@ -2,9 +2,12 @@ package com.spring_boot.HRMS.controller.candidate;
 
 import com.spring_boot.HRMS.dtos.CandidateDTO;
 import com.spring_boot.HRMS.dtos.CandidatePostDTO;
+import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.CandidateService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -27,8 +30,12 @@ public class CandidateController {
             summary = "Get Candidate by Unique Candidate Id",
             description = "This endpoint retrieve Candidate details by an unique ID",
             responses = {
-                    @ApiResponse(responseCode = "200",description = "Candidate Found"),
-                    @ApiResponse(responseCode = "404",description = "Candidate Not Found")
+                    @ApiResponse(responseCode = "200",description = "Candidate Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = CandidateDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404",description = "Candidate Not Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/{id}")
