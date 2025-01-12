@@ -1,15 +1,21 @@
 package com.spring_boot.HRMS.service;
 
 import com.spring_boot.HRMS.dao.HrDao;
+import com.spring_boot.HRMS.dao.JobDao;
 import com.spring_boot.HRMS.dtos.HrDTO;
 import com.spring_boot.HRMS.dtos.HrPostDTO;
+import com.spring_boot.HRMS.dtos.JobDTO;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.mapper.HrMapper;
+import com.spring_boot.HRMS.mapper.JobMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +24,8 @@ public class HRService {
     private final HrDao hrDao;
     private final PasswordEncoder passwordEncoder;
     private  final HrMapper hrMapper;
+    private final JobDao jobDao;
+    private  final JobMapper jobMapper;
 
 
     /**
@@ -84,6 +92,12 @@ public class HRService {
         catch (Exception e){
             throw new RuntimeException("can't find HR profile to delete by id:"+id);
         }
+    }
+    public List<JobDTO> findAllJobPosts(String email){
+        //Getting details of HR by email
+        HR hr=hrDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find HR by email id:"+email));
+        //getting all the JobList
+        return jobDao.findAllJobsByHrId(hr.getId()).stream().map(jobMapper::toDTO).collect(Collectors.toList());
     }
 
 }
