@@ -39,8 +39,6 @@ public class HRMSUserDetailsService implements UserDetailsService {
 
         Person person =personDao.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("can't find Hr profile with email:"+email));
 
-        log.info(person.toString());
-
         //Getting list of authorities.
         Collection<GrantedAuthority> authorities= List.of(new SimpleGrantedAuthority(person.getRole()));
 
