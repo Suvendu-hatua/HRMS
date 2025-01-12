@@ -10,7 +10,7 @@ import lombok.ToString;
 public class JobPostDTO {
     private String title;
     private String description;
-    private String[] skillSets;
+    private String skillSets;
     private int vacancy;
     private String location;
     private String jobType;

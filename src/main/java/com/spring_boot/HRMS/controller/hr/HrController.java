@@ -6,11 +6,14 @@ import com.spring_boot.HRMS.dtos.JobDTO;
 import com.spring_boot.HRMS.dtos.JobPostDTO;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.entity.Job;
+import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.HRService;
 import com.spring_boot.HRMS.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +52,15 @@ public class HrController {
             summary = "Get a HR by ID",
             description = "This endpoint retrieves a hr by their unique ID",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "HR found"),
-                    @ApiResponse(responseCode = "404", description = "HR not found")
+                    @ApiResponse(responseCode = "200", description = "HR found" ,
+                    content = @Content(
+                            mediaType ="application/json",schema = @Schema(implementation = HrDTO.class)
+                    )),
+                    @ApiResponse(responseCode = "404", description = "HR not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(
+                                    implementation = ErrorResponse.class
+                            ))
+                    )
             }
     )
     @GetMapping("/profile/{id}")
@@ -79,8 +89,12 @@ public class HrController {
             description = "This endpoint update an existing HR Profile",
             responses = {
                     @ApiResponse(responseCode = "200",description = "HR Updated Successfully"),
-                    @ApiResponse(responseCode = "500",description = "Internal Server Error"),
-                    @ApiResponse(responseCode = "400",description = "BAD Request")
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "400",description = "BAD Request",
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @PutMapping("/profile/{id}")
@@ -106,8 +120,12 @@ public class HrController {
             summary = "Get a Job details by JobID",
             description = "This endpoint retrieve a specific Job Details by an Unique JobID",
             responses = {
-                    @ApiResponse(responseCode = "200",description = "Job Details Found"),
-                    @ApiResponse(responseCode = "404",description = "Job Details Not Found")
+                    @ApiResponse(responseCode = "200",description = "Job Details Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = JobDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404",description = "Job Details Not Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/jobs/{id}")

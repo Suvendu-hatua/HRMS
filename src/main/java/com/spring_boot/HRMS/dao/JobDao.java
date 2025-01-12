@@ -13,4 +13,7 @@ public interface JobDao extends JpaRepository<Job,String> {
 
         @Query("SELECT  j FROM Job j WHERE LOWER(j.location) like LOWER(CONCAT('%', :location, '%'))")
         List<Job> findByLocation(@Param("location") String location);
+
+        @Query("SELECT j FROM Job j where LOWER(j.skillSets) like LOWER(CONCAT('%',:skill,'%'))")
+        List<Job> findBySkillSetsContaining(@Param("skill") String skill);
 }

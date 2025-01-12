@@ -84,4 +84,7 @@ public class JobService {
     public List<JobDTO> findJobsByLocation(String location){
         return jobDao.findByLocation(location).stream().map(jobMapper::toDTO).collect(Collectors.toList());
     }
+    public List<JobDTO> findJobsBySkillSets(String skils){
+        return jobDao.findBySkillSetsContaining(skils).stream().map(jobMapper::toDTO).collect(Collectors.toList());
+    }
 }

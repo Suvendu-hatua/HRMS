@@ -1,11 +1,13 @@
 package com.spring_boot.HRMS.controller.job;
 
 import com.spring_boot.HRMS.dtos.JobDTO;
-import com.spring_boot.HRMS.entity.Job;
+import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -32,7 +34,9 @@ public class JobController {
             description = "This endpoint retrieves all the Jobs",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
-                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping()
@@ -46,8 +50,12 @@ public class JobController {
             summary = "Get a Job By Unique Job Id",
             description = "This endpoint retrieves a Job by an Unique Job Id",
             responses = {
-                    @ApiResponse(responseCode = "200",description = "Job Found"),
-                    @ApiResponse(responseCode = "404",description = "Job Not Found")
+                    @ApiResponse(responseCode = "200",description = "Job Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = JobDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404",description = "Job Not Found",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/{id}")
@@ -67,7 +75,9 @@ public class JobController {
             description = "This endpoint retrieves jobs based on Job Title",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
-                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/searchByTitle")
@@ -81,12 +91,14 @@ public class JobController {
             description = "This endpoint retrieves jobs based on Skill Sets",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
-                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/searchBySkills")
-    public ResponseEntity<List<Job>> searchJobsBySkillSets(){
-        return null;
+    public ResponseEntity<List<JobDTO>> searchJobsBySkillSets(@RequestParam("key")String key){
+        return ResponseEntity.status(HttpStatus.OK).body(jobService.findJobsBySkillSets(key));
     }
 
     //Searching Jobs by location
@@ -95,7 +107,9 @@ public class JobController {
             description = "This endpoint retrieves jobs based on searched Location",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
-                    @ApiResponse(responseCode = "500",description = "Internal Server Error")
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
             }
     )
     @GetMapping("/searchByLocation")
