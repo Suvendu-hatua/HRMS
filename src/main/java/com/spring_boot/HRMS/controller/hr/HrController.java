@@ -1,9 +1,6 @@
 package com.spring_boot.HRMS.controller.hr;
 
-import com.spring_boot.HRMS.dtos.HrDTO;
-import com.spring_boot.HRMS.dtos.HrPostDTO;
-import com.spring_boot.HRMS.dtos.JobDTO;
-import com.spring_boot.HRMS.dtos.JobPostDTO;
+import com.spring_boot.HRMS.dtos.*;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
@@ -22,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hr")
@@ -200,6 +199,49 @@ public class HrController {
         try{
             jobService.deleteJobById(id);
             return ResponseEntity.status(HttpStatus.OK).body("deleted successfully.");
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Operation(
+            summary = "Get all Posted Jobs By a HR",
+            description = "This endpoint retrieves all the Jobs posted by a HR",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "List of Jobs Found"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
+            }
+    )
+    @GetMapping("/job-posts")
+    public ResponseEntity<List<JobDTO>> getAllJobPosts(Authentication authentication){
+        //getting username
+        String email=authentication.getName();
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body( hrService.findAllJobPosts(email));
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Operation(
+            summary = "Get All Applied Candidates",
+            description = "This endpoint retrieves all the Candidates who have applied to this particular Job",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "List of Applied Candidates Found"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",content = @Content(
+                            mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+            }
+    )
+    @GetMapping("/applied-candidates/{jobId}")
+    public ResponseEntity<List<CandidateDTO>> getAllAppliedCandidates(
+            @Parameter(description = "Unique Job Id")
+            @PathVariable String jobId){
+        //Get all the candidates who have applied to this job
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(hrService.findAllJobAppliedCandidates(jobId));
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
