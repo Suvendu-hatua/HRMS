@@ -1,5 +1,6 @@
 package com.spring_boot.HRMS.config;
 
+import com.spring_boot.HRMS.exceptionHandling.CustomAccessDeniedHandler;
 import com.spring_boot.HRMS.exceptionHandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,7 @@ public class SecurityConfiguration {
 
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(hbc->hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc->ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 }
