@@ -1,5 +1,7 @@
 package com.spring_boot.HRMS.config;
 
+import com.spring_boot.HRMS.exceptionHandling.CustomAccessDeniedHandler;
+import com.spring_boot.HRMS.exceptionHandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -27,7 +29,8 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrfCon->csrfCon.disable()).authorizeHttpRequests(requests-> requests
+        http.csrf(csrfCon->csrfCon.disable()).
+                authorizeHttpRequests(requests-> requests
                         .requestMatchers("/hr/**").hasRole("HR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/candidate/**").hasRole("CANDIDATE")
@@ -41,7 +44,8 @@ public class SecurityConfiguration {
                 );
 
         http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
+        http.httpBasic(hbc->hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc->ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 }
