@@ -120,10 +120,10 @@ public class HrController {
             description = "This endpoint retrieve a specific Job Details by an Unique JobID",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Job Details Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = JobDTO.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = JobDTO.class))
                     ),
                     @ApiResponse(responseCode = "404",description = "Job Details Not Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )

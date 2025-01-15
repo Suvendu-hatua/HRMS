@@ -31,7 +31,7 @@ public class JobService {
     }
 
     public JobDTO getJobById(String id){
-        Job job= jobDao.findById(id).orElseThrow(()->new RuntimeException("can't find Job by id:"+id));
+        Job job= jobDao.findById(id).orElseThrow(()->new ProfileNotFoundException("can't find Job by id:"+id));
         //Converting to JobDTO
         return jobMapper.toDTO(job);
     }
