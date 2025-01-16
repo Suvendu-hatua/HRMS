@@ -78,4 +78,27 @@ Anybody can retrieve list of jobs by querying with specific skill sets.
 ### Search Jobs By Location:
 Anybody can retrieve list of jobs by querying with a specific  job location.
 
+## Database Schema and Relationships:
+### Person Table:
+This Table contains all the sensitive information  for all type of users like ( ADMIN, HR, CANDIDATE).
+* email: unique
+* password: bcrypt format
+* id: primary key
+* role: [ADMIN,HR,CANDIDATE]
+### HR Table:
+This table contains all the relevant info abut HR like some personal details.
+* This table has one-to-one relationship with Person Table.
+* This Table has one-to-many relationship with Jobs Table.
+### Admin Table:
+Similar to HR table, this table also contains info about an Admin like personal details.
+* Has one-to-one Relationship with Person Table.
+### Candidate Table:
+Contains Candidate basic information including personal details.
+* Has one-to-one relationship with Person Table.
+* has many-to-many relationship with Jobs Table. (A candidate can apply to multiple jobs and vice versa).
+* Reference is maintained by an another Table (Candidate_Job).
+### Jobs Table:
+Contains all the Job related information like ( Title, description,skill-sets,vacancy,location,updated_date) etc.
+* Has Many-to-one Relationship with HR Table.
+* Has Many-to-Many relationship with Candidate Table.
 
