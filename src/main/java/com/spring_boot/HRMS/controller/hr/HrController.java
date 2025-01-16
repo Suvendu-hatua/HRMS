@@ -4,6 +4,7 @@ import com.spring_boot.HRMS.dtos.*;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.entity.Job;
 import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
+import com.spring_boot.HRMS.exceptionHandling.OwnershipValidationException;
 import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
 import com.spring_boot.HRMS.service.HRService;
 import com.spring_boot.HRMS.service.JobService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,11 +76,16 @@ public class HrController {
             throw new Exception(id+" can't be converted into a long value.");
         }
 
-        try {
-            return ResponseEntity.ok(hrService.getHrById(hrId));
-        }catch (Exception e){
-            throw new ProfileNotFoundException("can't find Hr profile with id:"+id);
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        //Extracting userEmail from authenticated user
+        String userEmail=authentication.getName();
+
+        HrDTO hrDTO=hrService.getHrById(hrId);
+        //Validating Ownership
+        if(!hrDTO.getEmail().equals(userEmail)){
+                throw new OwnershipValidationException("Access denied: You can only access your own profile.");
         }
+        return ResponseEntity.ok(hrDTO);
     }
 
 
@@ -105,13 +112,18 @@ public class HrController {
             log.error(e.getMessage());
             throw new Exception(id+" can't be converted into a long value.");
         }
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        //Extracting userEmail from authenticated user
+        String userEmail=authentication.getName();
 
-        try{
-            return ResponseEntity.ok(hrService.updateHrProfile(hrId,hrPostDTO));
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw new Exception(e.getMessage());
+
+        //Fetching Hr details by hrId
+        HrDTO hrDTO=hrService.getHrById(hrId);
+        //Validating Ownership
+        if(!hrDTO.getEmail().equals(userEmail)){
+                throw new OwnershipValidationException("Access denied: You can only access your own profile.");
         }
+        return ResponseEntity.ok(hrService.updateHrProfile(hrId,hrPostDTO));
     }
 
     //find a particular Job with id
@@ -175,6 +187,7 @@ public class HrController {
             @Parameter(description = "Unique Job Id")
             @PathVariable String id,
             @RequestBody JobPostDTO job){
+
         try{
             jobService.updateJob(id,job);
             return ResponseEntity.status(HttpStatus.OK).body("Job with id "+id+" updated successfully.");
