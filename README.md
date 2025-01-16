@@ -14,9 +14,24 @@ Backend of HRMS will be developed by SpringBoot lasted version 3.4.x along with 
 * Listing Port: default port (3306)
 * Database name: hrms
 * Later will be implementing redis in-memory database for better performance of the application.
-
+### Authentication and Authorization:
+Whole Authentication and Authorization is maintained by Spring Security. Apart from that,
+* Implemented ROLE-Based Authorization.
+* Implemented Ownership-Based Authorization.
+* Implementation of JWT( Json Web Token) is also in progress.
+* Exposing AuthenticationSuccess and failure events for better logging ang auditing purpose.
+* Enabled Global Exception Handling and Custom Handler for AccessDenied and Authentication failure.
+* Restricting private and public endpoints.
+* Implementation of CSRF attack protection is on progress.
+### Data Protection:
+* To protect every user's password, implemented storing of password in BCrypt format in Database.
+* Used DTOs (Data Transfer Object) as Request and Response body instead of Actual Entity class to avoid data leak of sensitive information like password.
+* Implemented Owner-Based-Authorization where a particular user can view, update,delete their profiles.
 
 # Features of HRMS
+## Register Candidate:
+This resource is a public resource when any job seekers (Candidate) can register himself/herself and apply to a specific Job.
+
 ## 1) Admin/System DashBoard:
 ### Admin Login:
 An Admin can sing-in to the application with a valid email id and password and can perform multiple tasks.
