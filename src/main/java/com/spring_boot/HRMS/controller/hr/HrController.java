@@ -187,6 +187,15 @@ public class HrController {
             @Parameter(description = "Unique Job Id")
             @PathVariable String id,
             @RequestBody JobPostDTO job){
+        //Extracting logged-in user details
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        String userEmail=authentication.getName();
+        //Getting Hr details who  posted this job with specific jobID
+        HR hr=jobService.getJobPostedHrByJobId(id);
+        //OwnershipBased validation
+        if(!hr.getPerson().getEmail().equals(userEmail)){
+            throw new OwnershipValidationException("Access Denied! You can't update this job post.");
+        }
 
         try{
             jobService.updateJob(id,job);
@@ -209,6 +218,15 @@ public class HrController {
     public ResponseEntity<String> deleteJobPostById(
             @Parameter(description = "Unique Job Id")
             @PathVariable String id){
+        //Extracting logged-in user details
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        String userEmail=authentication.getName();
+        //Getting Hr details who  posted this job with specific jobID
+        HR hr=jobService.getJobPostedHrByJobId(id);
+        //OwnershipBased validation
+        if(!hr.getPerson().getEmail().equals(userEmail)){
+            throw new OwnershipValidationException("Access Denied! You can't Delete this job post.");
+        }
         try{
             jobService.deleteJobById(id);
             return ResponseEntity.status(HttpStatus.OK).body("deleted successfully.");
