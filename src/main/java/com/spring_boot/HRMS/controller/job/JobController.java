@@ -35,7 +35,7 @@ public class JobController {
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
                     @ApiResponse(responseCode = "500",description = "Internal Server Error",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )
@@ -76,7 +76,7 @@ public class JobController {
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
                     @ApiResponse(responseCode = "500",description = "Internal Server Error",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )
@@ -92,7 +92,7 @@ public class JobController {
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
                     @ApiResponse(responseCode = "500",description = "Internal Server Error",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )
@@ -108,7 +108,7 @@ public class JobController {
             responses = {
                     @ApiResponse(responseCode = "200",description = "Jobs Found"),
                     @ApiResponse(responseCode = "500",description = "Internal Server Error",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )

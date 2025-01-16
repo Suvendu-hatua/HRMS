@@ -32,10 +32,10 @@ public class CandidateController {
             description = "This endpoint retrieve Candidate details by an unique ID",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Candidate Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = CandidateDTO.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = CandidateDTO.class))
                     ),
                     @ApiResponse(responseCode = "404",description = "Candidate Not Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )

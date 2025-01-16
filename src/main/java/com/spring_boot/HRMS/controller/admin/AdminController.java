@@ -45,10 +45,10 @@ public class AdminController {
             description = "This endpoint retrieves Admin Details by an Unique Admin Id",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Admin Details Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = AdminDTO.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = AdminDTO.class))
                     ),
                     @ApiResponse(responseCode = "404",description = "Admin Details Not Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )
