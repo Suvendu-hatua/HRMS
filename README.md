@@ -2,10 +2,14 @@
 # HRMS Application
 
 ## Backend Development:
-Backend of HRMS will be developed by SpringBoot lasted version 3.4.x
+Backend of HRMS will be developed by SpringBoot lasted version 3.4.x along with Spring Data JPA and Spring Security.
 
 #  Configuration:
-## Database Configuration:
+### Apache Tomcat Server Configuration:
+* listing on Port: default port(8080)
+* Context-path of the application: /hrms
+* Session time out: 20 minutes
+### Database Configuration:
 * Used MySQL Database as a primary storage database.
 * Listing Port: default port (3306)
 * Database name: hrms
