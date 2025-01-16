@@ -36,6 +36,12 @@ public class JobService {
         return jobMapper.toDTO(job);
     }
 
+    public HR getJobPostedHrByJobId(String jobId){
+        Job job= jobDao.findById(jobId).orElseThrow(()->new ProfileNotFoundException("can't find Job by id:"+jobId));
+        //Converting to JobDTO
+        return job.getHr();
+    }
+
     @Transactional
     public Job saveJob(JobPostDTO jobPostDTO,String email){
         //retrieving HR details by  authenticate user's email
