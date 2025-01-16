@@ -20,7 +20,7 @@ public class AdminService {
     private final AdminMapper adminMapper;
 
     public AdminDTO getAdminById(long id){
-        Admin admin= adminDao.findById(id).orElseThrow(()->new RuntimeException("Admin profile is not found with id:"+id));
+        Admin admin= adminDao.findById(id).orElseThrow(()->new ProfileNotFoundException("Admin profile is not found with id:"+id));
         //converting Admin to AdminDTO
         return adminMapper.toDTO(admin);
     }

@@ -3,7 +3,7 @@ package com.spring_boot.HRMS.controller.candidate;
 import com.spring_boot.HRMS.dtos.CandidateDTO;
 import com.spring_boot.HRMS.dtos.CandidatePostDTO;
 import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
-import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
+import com.spring_boot.HRMS.exceptionHandling.OwnershipValidationException;
 import com.spring_boot.HRMS.service.CandidateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,13 +48,20 @@ public class CandidateController {
             log.error(e.getMessage());
             throw new RuntimeException(id+" can't be converted into a long value.");
         }
-        //success
-        try{
-            CandidateDTO candidate=candidateService.getCandidateById(candidateId);
-            return ResponseEntity.status(HttpStatus.OK).body(candidate);
-        }catch (Exception e){
-            throw new ProfileNotFoundException(e.getMessage());
+
+        //Extracting logged-in user details
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String userEmail=authentication.getName();
+
+        //Getting Candidate details by Candidate Id
+        CandidateDTO candidate=candidateService.getCandidateById(candidateId);
+        //Validating Ownership based authentication
+        if(!candidate.getEmail().equals(userEmail)){
+            throw new OwnershipValidationException("Access Denied! you are not authorized to view this account.");
         }
+        //Success
+        return ResponseEntity.status(HttpStatus.OK).body(candidate);
+
     }
 
     //Update Candidate Account
@@ -73,6 +81,16 @@ public class CandidateController {
         }catch (Exception e){
             log.error(e.getMessage());
             throw new RuntimeException(id+" can't be converted into a long value.");
+        }
+        //Extracting logged-in user details
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String userEmail=authentication.getName();
+
+        //Getting Candidate details by Candidate Id
+        CandidateDTO candidate=candidateService.getCandidateById(candidateId);
+        //Validating Ownership based authentication
+        if(!candidate.getEmail().equals(userEmail)){
+            throw new OwnershipValidationException("Access Denied! you are not authorized to view this account.");
         }
         //Success
         try{

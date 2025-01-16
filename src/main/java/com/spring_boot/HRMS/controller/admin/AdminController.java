@@ -6,7 +6,7 @@ import com.spring_boot.HRMS.dtos.HrPostDTO;
 import com.spring_boot.HRMS.entity.Admin;
 import com.spring_boot.HRMS.entity.HR;
 import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
-import com.spring_boot.HRMS.exceptionHandling.ProfileNotFoundException;
+import com.spring_boot.HRMS.exceptionHandling.OwnershipValidationException;
 import com.spring_boot.HRMS.service.AdminService;
 import com.spring_boot.HRMS.service.HRService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -62,11 +64,18 @@ public class AdminController {
             throw new Exception(id+" can't be converted into a long value.");
         }
 
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(adminService.getAdminById(adminId));
-        }catch (Exception e){
-            throw new ProfileNotFoundException("can't find Admin profile with id:"+id);
+        //Extracting logged-in user details
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String userEmail=authentication.getName();
+
+        //Getting Candidate details by Candidate Id
+        AdminDTO admin=adminService.getAdminById(adminId);
+        //Validating Ownership based authentication
+        if(!admin.getEmail().equals(userEmail)){
+            throw new OwnershipValidationException("Access Denied! you are not authorized to view this account.");
         }
+        //Success
+        return ResponseEntity.status(HttpStatus.OK).body(admin);
     }
 
 

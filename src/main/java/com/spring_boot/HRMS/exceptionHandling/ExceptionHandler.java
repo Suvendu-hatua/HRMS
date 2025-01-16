@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class ExceptionHandler {
 
@@ -41,6 +45,17 @@ public class ExceptionHandler {
 
         //returning object
         return new ResponseEntity<ErrorResponse>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+    // Handle AccessDeniedException
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    public ResponseEntity<Map<String, Object>> handleOwnershipValidationException(OwnershipValidationException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("error", "Forbidden");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
 }

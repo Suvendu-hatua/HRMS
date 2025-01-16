@@ -46,7 +46,7 @@ public class CandidateService {
     }
 
     public CandidateDTO getCandidateById(long id){
-        Candidate candidate= candidateDao.findById(id).orElseThrow(()->new RuntimeException("can't find candidate with id:"+id));
+        Candidate candidate= candidateDao.findById(id).orElseThrow(()->new ProfileNotFoundException("can't find candidate with id:"+id));
         //converting to CandidateDTO
         return candidateMapper.toDTO(candidate);
     }

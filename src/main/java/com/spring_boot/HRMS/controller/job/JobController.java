@@ -51,10 +51,10 @@ public class JobController {
             description = "This endpoint retrieves a Job by an Unique Job Id",
             responses = {
                     @ApiResponse(responseCode = "200",description = "Job Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = JobDTO.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = JobDTO.class))
                     ),
                     @ApiResponse(responseCode = "404",description = "Job Not Found",
-                            content = @Content(mediaType = "appplication/json",schema = @Schema(implementation = ErrorResponse.class))
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )

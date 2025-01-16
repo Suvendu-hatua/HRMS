@@ -40,7 +40,7 @@ public class HRService {
      */
 
     public HrDTO getHrById(long id){
-       HR hr= hrDao.findById(id).orElseThrow(()->new RuntimeException("Hr profile is not found with id:"+id));
+       HR hr= hrDao.findById(id).orElseThrow(()->new ProfileNotFoundException("Hr profile is not found with id:"+id));
        //Converting HR to HrDTO
         return hrMapper.toDTO(hr);
 
