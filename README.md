@@ -46,7 +46,7 @@ Replace `<host>` and `<port>` with the appropriate values for your local or prod
 ## Register Candidate:
 This resource is a public resource when any job seekers (Candidate) can `register` himself/herself and apply to a specific Job.
 
-## 1) Admin/System DashBoard:
+## 1) `Admin/System DashBoard`:
 ### Admin Login:
 An Admin can sing-in to the application with a valid `email id` and `password` and can perform multiple tasks.
 ### View Candidate Profile and Update Profile::
@@ -56,7 +56,7 @@ Only those who have admin access can add a HR
 ### Delete a HR:
 an Admin can delete an HR also.
 
-## 2) Candidate Dashboard:
+## 2) `Candidate Dashboard`:
 ### Candidate Login:
 an existing candidate can sing-in his/her account with an valid email id and password.
 ### View Candidate Profile and Update Profile:
@@ -64,7 +64,7 @@ Only an authenticated Candidate can view his/her profile and update also
 ### Apply to a Job Post:
 An authenticated Candidate can apply to an existing Job post.
 
-## 3) HR Dashboard:
+## 3) `HR Dashboard`:
 ### HR Login: 
 an existing HR can login to the application using their `emailId` and `password`.
 ### View HR Profile and Update Profile:
@@ -79,7 +79,7 @@ Only an authenticated HR who has posted the job, only he/she can delete an exist
 Retrieve all the job posts those are posted by an authenticated HR.
 ### Get All Applied Candidates:
 Retrieve all the Candidates who has applied to a specific job with `Job Id`
-## 4) Job  DashBoard:
+## 4) `Job  DashBoard`:
 All the utility methods related to Job Dashboard are non-authorized methods means no authentication is required to access utilities.
 ###  Get All the Jobs:
 Anyone can retrieve `all the Jobs`, posted by any HR for any locations
