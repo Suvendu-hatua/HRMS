@@ -18,11 +18,11 @@ Backend of HRMS will be developed by `SpringBoot lasted version 3.4.x` along wit
 Whole Authentication and Authorization is maintained by Spring Security. Apart from that,
 * Implemented `ROLE-Based` Authorization.
 * Implemented `Ownership-Based` Authorization.
-* Implementation of `JWT( Json Web Token)` is also in progress.
+* Implementation of `JWT( Json Web Token)` is completed.
 * Exposing `AuthenticationSuccess` and `failure events` for better logging ang auditing purpose.
 * Enabled Global Exception Handling and Custom Handler for AccessDenied and Authentication failure.
 * Restricting private and public endpoints.
-* Implementation of `CSRF attack protection` is on progress.
+* Implementation of `CSRF attack protection` is successfully done.
 ### Data Protection:
 * To protect every user's password, implemented storing of password in `BCrypt` format in Database.
 * Used `DTOs (Data Transfer Object)` as Request and Response body instead of Actual Entity class to avoid data leak of sensitive information like password.
