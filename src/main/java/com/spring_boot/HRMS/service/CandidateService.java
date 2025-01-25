@@ -24,6 +24,12 @@ public class CandidateService {
     private final CandidateMapper candidateMapper;
     private final PasswordEncoder passwordEncoder;
 
+    public CandidateDTO getCandidateByEmail(String userEmail){
+        Candidate candidate=candidateDao.findByPersonEmail(userEmail).orElseThrow(()->new ProfileNotFoundException("can't find Candidate profile with email:"+userEmail));
+        //converting candidate to CandidateDTO
+        return candidateMapper.toDTO(candidate);
+    }
+
     /**
      * @param candidatePostDTO
      * @return

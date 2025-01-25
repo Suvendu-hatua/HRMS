@@ -33,6 +33,12 @@ public class HRService {
     private final CandidateMapper candidateMapper;
 
 
+    public HrDTO getHrByEmail(String userEmail){
+        HR hr=hrDao.findByPersonEmail(userEmail).orElseThrow(()->new ProfileNotFoundException("Can't find HR profile with email:"+userEmail));
+        //converting hr to HrDTO
+        return  hrMapper.toDTO(hr);
+    }
+
     /**
      * Find Hr by id
      * @param id

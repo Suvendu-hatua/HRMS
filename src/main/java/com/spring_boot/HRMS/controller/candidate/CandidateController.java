@@ -27,6 +27,20 @@ public class CandidateController {
 
     private CandidateService candidateService;
 
+    //Get Dashboard
+    @Operation(
+            summary = "Candidate Dashboard",
+            description = "This endpoint will retrieve logged-in Candidate details"
+    )
+    @GetMapping()
+    public ResponseEntity<CandidateDTO> getDashboard(){
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        //Extracting logged-in user's email
+        String userEmail=authentication.getName();
+        log.info("Welcome to HRMS Application");
+        return ResponseEntity.status(HttpStatus.OK).body(candidateService.getCandidateByEmail(userEmail));
+    }
+
     @Operation(
             summary = "Get Candidate by Unique Candidate Id",
             description = "This endpoint retrieve Candidate details by an unique ID",

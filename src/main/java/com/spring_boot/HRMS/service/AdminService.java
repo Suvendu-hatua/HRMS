@@ -19,6 +19,11 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
     private final AdminMapper adminMapper;
 
+    public AdminDTO getAdminByEmail(String userEmail){
+        Admin admin=adminDao.findByPersonEmail(userEmail).orElseThrow(()->new ProfileNotFoundException("can't find Admin profile with email:"+userEmail));
+        //converting admin to AdminDTO
+        return adminMapper.toDTO(admin);
+    }
     public AdminDTO getAdminById(long id){
         Admin admin= adminDao.findById(id).orElseThrow(()->new ProfileNotFoundException("Admin profile is not found with id:"+id));
         //converting Admin to AdminDTO

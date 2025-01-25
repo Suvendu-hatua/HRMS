@@ -41,11 +41,16 @@ public class HrController {
 
     //Get Dashboard
     @Operation(
-            summary = "HR Dashboard"
+            summary = "HR Dashboard",
+            description = "This endpoint will retrieve logged-in Hr's details"
     )
     @GetMapping()
-    public String getDashboard(){
-        return "Welcome to HRMS Application";
+    public ResponseEntity<HrDTO> getDashboard(){
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        //Extracting logged-in user's email
+        String userEmail=authentication.getName();
+        log.info("Welcome to HRMS Application");
+        return ResponseEntity.status(HttpStatus.OK).body(hrService.getHrByEmail(userEmail));
     }
 
     //Get HR profile by HR id
@@ -64,7 +69,7 @@ public class HrController {
                     )
             }
     )
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<HrDTO> getProfile(
             @Parameter(description = "Unique Id of HR")
             @PathVariable String id) throws Exception {
@@ -103,7 +108,7 @@ public class HrController {
                     )
             }
     )
-    @PutMapping("/profile/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<HR> updateHrProfile(@PathVariable String id, @RequestBody HrPostDTO hrPostDTO) throws Exception {
         long hrId;
         try{
