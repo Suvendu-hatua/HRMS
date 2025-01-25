@@ -3,6 +3,8 @@ package com.spring_boot.HRMS.config;
 import com.spring_boot.HRMS.exceptionHandling.CustomAccessDeniedHandler;
 import com.spring_boot.HRMS.exceptionHandling.CustomBasicAuthenticationEntryPoint;
 import com.spring_boot.HRMS.filter.CsrfTokenFilter;
+import com.spring_boot.HRMS.filter.JWTTokenGeneratorFilter;
+import com.spring_boot.HRMS.filter.JWTTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -36,9 +38,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler=new CsrfTokenRequestAttributeHandler();
 
-        http.securityContext(securityContext->securityContext.requireExplicitSave(false))
+        http//.securityContext(securityContext->securityContext.requireExplicitSave(false))
                 //Session Management for Spring Security
-                .sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 . authorizeHttpRequests(requests-> requests
                         .requestMatchers("/hr/**").hasRole("HR")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -60,7 +62,9 @@ public class SecurityConfiguration {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         //CSRF/XSRF token will be generated after Basic Authentication is complete.
         http.addFilterAfter(new CsrfTokenFilter(), BasicAuthenticationFilter.class);
-
+        //Adding JWT Token generator and validator filter
+        http.addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JWTTokenValidatorFilter(),BasicAuthenticationFilter.class);
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(hbc->hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc->ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
