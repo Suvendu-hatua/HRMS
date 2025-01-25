@@ -33,11 +33,16 @@ public class AdminController {
     private HRService hrService;
     private AdminService adminService;
     @Operation(
-            summary = "Get Admin Dashboard"
+            summary = "Get Admin Dashboard",
+            description = "This endpoint will retrieve logged in admin details"
     )
     @GetMapping()
-    public ResponseEntity<String> getAdminDashBoard(){
-        return ResponseEntity.status(HttpStatus.OK).body("Welcome to HRMS Portal [ADMIN]");
+    public ResponseEntity<AdminDTO> getAdminDashBoard(){
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        //Extracting logged in user's user email
+        String userEmail=authentication.getName();
+        log.info("Welcome to HRMS Portal [ADMIN]");
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAdminByEmail(userEmail));
     }
 
     @Operation(
