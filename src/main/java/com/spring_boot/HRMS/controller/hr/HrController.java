@@ -42,7 +42,18 @@ public class HrController {
     //Get Dashboard
     @Operation(
             summary = "HR Dashboard",
-            description = "This endpoint will retrieve logged-in Hr's details"
+            description = "This endpoint will retrieve logged-in Hr's details",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "HR found" ,
+                            content = @Content(
+                                    mediaType ="application/json",schema = @Schema(implementation = HrDTO.class)
+                            )),
+                    @ApiResponse(responseCode = "404", description = "HR not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(
+                                    implementation = ErrorResponse.class
+                            ))
+                    )
+            }
     )
     @GetMapping()
     public ResponseEntity<HrDTO> getDashboard(){
@@ -51,46 +62,6 @@ public class HrController {
         String userEmail=authentication.getName();
         log.info("Welcome to HRMS Application");
         return ResponseEntity.status(HttpStatus.OK).body(hrService.getHrByEmail(userEmail));
-    }
-
-    //Get HR profile by HR id
-    @Operation(
-            summary = "Get a HR by ID",
-            description = "This endpoint retrieves a hr by their unique ID",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "HR found" ,
-                    content = @Content(
-                            mediaType ="application/json",schema = @Schema(implementation = HrDTO.class)
-                    )),
-                    @ApiResponse(responseCode = "404", description = "HR not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(
-                                    implementation = ErrorResponse.class
-                            ))
-                    )
-            }
-    )
-    @GetMapping("/{id}")
-    public ResponseEntity<HrDTO> getProfile(
-            @Parameter(description = "Unique Id of HR")
-            @PathVariable String id) throws Exception {
-        long hrId;
-        try{
-            hrId=Long.parseLong(id);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw new Exception(id+" can't be converted into a long value.");
-        }
-
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        //Extracting userEmail from authenticated user
-        String userEmail=authentication.getName();
-
-        HrDTO hrDTO=hrService.getHrById(hrId);
-        //Validating Ownership
-        if(!hrDTO.getEmail().equals(userEmail)){
-                throw new OwnershipValidationException("Access denied: You can only access your own profile.");
-        }
-        return ResponseEntity.ok(hrDTO);
     }
 
 
@@ -108,27 +79,13 @@ public class HrController {
                     )
             }
     )
-    @PutMapping("/update/{id}")
-    public ResponseEntity<HR> updateHrProfile(@PathVariable String id, @RequestBody HrPostDTO hrPostDTO) throws Exception {
-        long hrId;
-        try{
-            hrId=Long.parseLong(id);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw new Exception(id+" can't be converted into a long value.");
-        }
+    @PutMapping("/update")
+    public ResponseEntity<HR> updateHrProfile(@RequestBody HrPostDTO hrPostDTO) throws Exception {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         //Extracting userEmail from authenticated user
         String userEmail=authentication.getName();
 
-
-        //Fetching Hr details by hrId
-        HrDTO hrDTO=hrService.getHrById(hrId);
-        //Validating Ownership
-        if(!hrDTO.getEmail().equals(userEmail)){
-                throw new OwnershipValidationException("Access denied: You can only access your own profile.");
-        }
-        return ResponseEntity.ok(hrService.updateHrProfile(hrId,hrPostDTO));
+        return ResponseEntity.ok(hrService.updateHrProfile(userEmail,hrPostDTO));
     }
 
     //find a particular Job with id

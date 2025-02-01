@@ -70,22 +70,30 @@ public class HRService {
 
     /**
      * Update Hr profile
-     * @param id
+     * @param  email
      * @param hrPostDTO
      * @return
      */
 
     @Transactional
-    public HR updateHrProfile(long id,HrPostDTO hrPostDTO){
-        if(hrDao.existsById(id)){
-            HR hr=hrDao.findById(id).orElseThrow(()->new ProfileNotFoundException("can't find HR profile with id:"+id));
+    public HR updateHrProfile(String email,HrPostDTO hrPostDTO){
+
+        try{
+            HR hr=hrDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find HR profile with email:"+email));
             //updating fields
-            hr.setFirstName(hrPostDTO.getFirstName());
-            hr.setLastName(hrPostDTO.getLastName());
-            hr.setMobileNumber(hrPostDTO.getMobileNumber());
+            if(hrPostDTO.getFirstName()!=null){
+                hr.setFirstName(hrPostDTO.getFirstName());
+            }else if(hrPostDTO.getLastName()!=null){
+                hr.setLastName(hrPostDTO.getLastName());
+            }
+            else if(hrPostDTO.getMobileNumber()!=null){
+                hr.setMobileNumber(hrPostDTO.getMobileNumber());
+            }
             return hrDao.save(hr);
+        }catch (Exception e){
+            throw new RuntimeException("can't update hr profile.");
         }
-        throw new RuntimeException("can't update hr profile.");
+
     }
 
     /**
