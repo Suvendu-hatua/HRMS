@@ -35,11 +35,17 @@ public class OpenApiConfig {
                         new Server().url("https://api.production.com").description("Production Environment")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
+                .addSecurityItem(new SecurityRequirement().addList("Authorization"))
                 .components(new Components()
                         .addSecuritySchemes("basicAuth",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("basic")));
+                                        .scheme("basic"))
+                        .addSecuritySchemes("Authorization", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization"))
+                );
     }
 
 }
