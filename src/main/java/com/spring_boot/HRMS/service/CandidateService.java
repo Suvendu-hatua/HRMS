@@ -58,36 +58,34 @@ public class CandidateService {
     }
 
     /**
-     * @param id
+     * @param  email
      * @param candidatePostDTO
      * @return
      */
     @Transactional
-    public Candidate updateCandidate(long id, CandidatePostDTO candidatePostDTO){
-        if(candidateDao.existsById(id)){
-            Candidate candidate=candidateDao.findById(id).orElseThrow(()->new ProfileNotFoundException("can't find Candidate Profile with Id:"+id));
-            //Updating fields
-            candidate.setFirstName(candidatePostDTO.getFirstName());
-            candidate.setLastName(candidatePostDTO.getLastName());
-            candidate.setMobileNumber(candidate.getMobileNumber());
-            return candidateDao.save(candidate);
-        }else{
-            throw new RuntimeException("can't find candidate profile to update with id:"+id);
-        }
+    public Candidate updateCandidate(String email, CandidatePostDTO candidatePostDTO){
+            try{
+                Candidate candidate=candidateDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find Candidate Profile with email:"+email));
+                //Updating fields
+                candidate.setFirstName(candidatePostDTO.getFirstName());
+                candidate.setLastName(candidatePostDTO.getLastName());
+                candidate.setMobileNumber(candidate.getMobileNumber());
+                return candidateDao.save(candidate);
+            }catch (Exception e){
+                throw new RuntimeException("can't update candidate profile"+e.getMessage());
+            }
     }
 
     /**
-     * @param id
+     * @param email
      */
     @Transactional
-    public void deleteCandidateById(long id){
+    public void deleteCandidate(String email){
         try{
-            if(candidateDao.existsById(id)){
-                candidateDao.deleteById(id);
-            }
-
+            Candidate candidate=candidateDao.findByPersonEmail(email).orElseThrow(()->new ProfileNotFoundException("can't find Candidate Profile with email:"+email));
+            candidateDao.deleteById(candidate.getId());
         }catch (Exception e){
-            throw new RuntimeException("can't find candidate to delete with id:"+id);
+            throw new RuntimeException("can't  delete candidate account "+e.getMessage());
         }
     }
 

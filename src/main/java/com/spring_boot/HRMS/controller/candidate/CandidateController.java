@@ -3,7 +3,6 @@ package com.spring_boot.HRMS.controller.candidate;
 import com.spring_boot.HRMS.dtos.CandidateDTO;
 import com.spring_boot.HRMS.dtos.CandidatePostDTO;
 import com.spring_boot.HRMS.exceptionHandling.ErrorResponse;
-import com.spring_boot.HRMS.exceptionHandling.OwnershipValidationException;
 import com.spring_boot.HRMS.service.CandidateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +29,15 @@ public class CandidateController {
     //Get Dashboard
     @Operation(
             summary = "Candidate Dashboard",
-            description = "This endpoint will retrieve logged-in Candidate details"
+            description = "This endpoint will retrieve logged-in Candidate details",
+            responses = {
+                    @ApiResponse(responseCode = "200",description = "Candidate Found",
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = CandidateDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404",description = "Candidate Not Found",
+                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
+                    )
+            }
     )
     @GetMapping()
     public ResponseEntity<CandidateDTO> getDashboard(){
@@ -41,41 +48,23 @@ public class CandidateController {
         return ResponseEntity.status(HttpStatus.OK).body(candidateService.getCandidateByEmail(userEmail));
     }
 
+    //Delete candidate account
     @Operation(
-            summary = "Get Candidate by Unique Candidate Id",
-            description = "This endpoint retrieve Candidate details by an unique ID",
+            summary = "Delete Candidate Profile",
+            description = "This endpoint deletes logged-in  Candidate Profile",
             responses = {
-                    @ApiResponse(responseCode = "200",description = "Candidate Found",
-                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = CandidateDTO.class))
-                    ),
-                    @ApiResponse(responseCode = "404",description = "Candidate Not Found",
-                            content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
+                    @ApiResponse(responseCode = "200",description = "Candidate Updated Successfully"),
+                    @ApiResponse(responseCode = "500",description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",schema = @Schema(implementation = ErrorResponse.class))
                     )
             }
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<CandidateDTO> getCandidateById(@PathVariable String id){
-        long candidateId;
-        try{
-            candidateId=Long.parseLong(id);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw new RuntimeException(id+" can't be converted into a long value.");
-        }
-
-        //Extracting logged-in user details
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        String userEmail=authentication.getName();
-
-        //Getting Candidate details by Candidate Id
-        CandidateDTO candidate=candidateService.getCandidateById(candidateId);
-        //Validating Ownership based authentication
-        if(!candidate.getEmail().equals(userEmail)){
-            throw new OwnershipValidationException("Access Denied! you are not authorized to view this account.");
-        }
-        //Success
-        return ResponseEntity.status(HttpStatus.OK).body(candidate);
-
+    @DeleteMapping()
+    public ResponseEntity<String> deleteCandidateAccount(Authentication authentication){
+        //getting logged-in user's email
+        String email=authentication.getName();
+        candidateService.deleteCandidate(email);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted successfully.");
     }
 
     //Update Candidate Account
@@ -87,28 +76,15 @@ public class CandidateController {
                     @ApiResponse(responseCode = "500",description = "Internal Server Error")
             }
     )
-    @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateCandidateAccount(@PathVariable String id, @RequestBody CandidatePostDTO candidatePostDTO){
-        long candidateId;
-        try{
-            candidateId=Long.parseLong(id);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw new RuntimeException(id+" can't be converted into a long value.");
-        }
+    @PutMapping("/update")
+    public ResponseEntity<String> updateCandidateAccount( @RequestBody CandidatePostDTO candidatePostDTO){
         //Extracting logged-in user details
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         String userEmail=authentication.getName();
 
-        //Getting Candidate details by Candidate Id
-        CandidateDTO candidate=candidateService.getCandidateById(candidateId);
-        //Validating Ownership based authentication
-        if(!candidate.getEmail().equals(userEmail)){
-            throw new OwnershipValidationException("Access Denied! you are not authorized to view this account.");
-        }
         //Success
         try{
-            candidateService.updateCandidate(candidateId,candidatePostDTO);
+            candidateService.updateCandidate(userEmail,candidatePostDTO);
             return ResponseEntity.status(HttpStatus.OK).body("Account updated successfully.");
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
